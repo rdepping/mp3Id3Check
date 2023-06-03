@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "mp3id3check"
+version = "0.1.0"
+description = "check mp3 files for a set of expected id3 tags"
+authors = ["Ralph Depping <github@depping.me>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+mutagen = "^1.46.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

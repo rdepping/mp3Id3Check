@@ -2,16 +2,34 @@
 check mp3 files for a set of expected id3 tags
 
 Install dependencies
-`pip install mutagen`
+`poetry install` or `pip install mutagen`
 
 Edit `mp3_id3_check.py` to update for the list of expected tags
 
-Run command on folder containing mp3s
-❯ python mp3_id3_check.py /Users/user/mp3-folder
 
-Sample output
 
-```shell
+Help
+
+```commandline
+❯ poetry run python mp3_id3_check.py --help
+usage: mp3_id3_check.py [-h] [-s] [-c] [FOLDER_PATH]
+
+Check MP3 files for expected ID3 tags.
+
+positional arguments:
+  FOLDER_PATH    path to the folder (default: current folder)
+
+options:
+  -h, --help     show this help message and exit
+  -s, --summary  include a summary
+  -c, --correct  (future) automatically correct missing tags where possible
+```
+
+Example run with summary
+
+```commandline
+❯  poetry run python mp3_id3_check.py /Users/user/mp3-folder -s
+
 Total files checked: 4
 Compliant files: 4
 Non-compliant files: 0

@@ -17,7 +17,7 @@ expected_tags = {
 }
 
 
-def check_mp3_files(folder_path):
+def check_mp3_files(folder_path, summary):
     # Initialize counters
     total_files = 0
     compliant_files = 0
@@ -49,31 +49,34 @@ def check_mp3_files(folder_path):
             except Exception as e:
                 print(f"Error processing file '{filename}': {str(e)}")
 
-    # Print summary
-    print(f"Total files checked: {total_files}")
-    print(f"Compliant files: {compliant_files}")
-    print(f"Non-compliant files: {len(non_compliant_files)}")
+    print(f"Non-compliant files found: {len(non_compliant_files)}")
     for filename, missing_tags in non_compliant_files:
-        print(f"\nFile: {filename}")
+        print(f"\tFile: {filename} is missing {missing_tags}")
 
-    # Print tag summary
-    print("\nTag Summary:")
-    for tag in expected_tags:
-        print(f"\n=== {tag}:")
-        values = tag_summary[tag]
-        unique_values = set(values)
-        for value in unique_values:
-            if value is not None:
-                count = values.count(value)
-                print(f"{value} ({count} file(s))")
+    if summary:
+        print(f"Total files checked: {total_files}, "
+              f"Compliant: {total_files - len(non_compliant_files)} "
+              f"Non-compliant: {len(non_compliant_files)}")
+
+        print("\nTag Summary:")
+        for tag in expected_tags:
+            print(f"\n=== {tag}:")
+            values = tag_summary[tag]
+            unique_values = set(values)
+            for value in unique_values:
+                if value is not None:
+                    count = values.count(value)
+                    print(f"{value} ({count} file(s))")
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Check MP3 files for expected ID3 tags.')
     parser.add_argument('folder_path', metavar='FOLDER_PATH', type=str, nargs='?',
                         default='.', help='path to the folder (default: current folder)')
+    parser.add_argument('-s', '--summary', help='include a summary',
+                        action='store_true')
+    parser.add_argument('-c', '--correct', help='(future) automatically correct missing tags where possible',
+                        action='store_true')
     args = parser.parse_args()
 
-    folder_path = args.folder_path
-
-    check_mp3_files(folder_path)
+    check_mp3_files(args.folder_path, args.summary)
