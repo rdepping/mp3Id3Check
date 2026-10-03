@@ -2,14 +2,14 @@
 check mp3 files for a set of expected id3 tags
 
 Install dependencies
-`poetry install` or `pip install mutagen`
+`uv sync` or `uv add mutagen`
 
 Edit `mp3_id3_check.py` to update for the list of expected tags, export headers to csv etc.
 
 Help
 
 ```commandline
-❯ poetry run python mp3_id3_check.py --help
+❯ uv run mp3-id3-check --help
 usage: mp3_id3_check.py [-h] [-s] [-c] [-x] [FOLDER_PATH]
 
 Check MP3 files for expected ID3 tags.
@@ -20,14 +20,14 @@ positional arguments:
 options:
   -h, --help     show this help message and exit
   -s, --summary  include a summary
-  -c, --correct  (future) automatically correct missing tags where possible
+  -c, --correct  automatically correct missing tags where possible
   -x, --export   Export csv summary
 ```
 
 Example run with summary
 
 ```commandline
-❯  poetry run python mp3_id3_check.py /Users/user/mp3-folder -s
+❯  uv run mp3-id3-check /Users/user/mp3-folder -s
 
 Total files checked: 6, Compliant: 6 Non-compliant: 0
 
@@ -66,7 +66,7 @@ Grace Restoration - Galatians 6:1-6 (1 file(s))
 Example run with export
 
 ```commandline
-❯  poetry run python mp3_id3_check.py /Users/user/mp3-folder -x
+❯  uv run mp3-id3-check /Users/user/mp3-folder -x
 Skipping export of tag genre from Genesis Ch26v1-33 - Relentlessly Faithful.mp3
 Skipping export of tag genre from danielCh2_dreamsDoComeTrue_20140914.mp3
 Skipping export of tag genre from jesusComfortForAllPeople_20191229.mp3

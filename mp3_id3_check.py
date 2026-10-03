@@ -2,7 +2,9 @@
 
 import os
 import argparse
+import re
 from mutagen.easyid3 import EasyID3
+from mutagen.id3 import ID3NoHeaderError
 import csv
 from pathlib import Path
 
@@ -24,6 +26,82 @@ csv_headers = [
     'filepath',
     'filename',
 ]
+
+
+def title_case_filename_part(value):
+    value = re.sub(r'[-_]+', ' ', value)
+    value = re.sub(r'(?<=[a-z])(?=[A-Z])', ' ', value)
+    value = re.sub(r'\s+', ' ', value).strip()
+    return value.title()
+
+
+def suggest_sermon_tags(file_path):
+    filename = Path(file_path).stem
+    date_match = re.search(r'(20\d{6}|19\d{6}|20\d{2}|19\d{2})$', filename)
+    year = ''
+    title_source = filename
+    if date_match:
+        date_value = date_match.group(1)
+        year = date_value[:4]
+        title_source = filename[:date_match.start()].rstrip('_- ')
+
+    title_parts = re.split(r'[_-]+', title_source, maxsplit=1)
+    passage = title_case_filename_part(title_parts[0]) if title_parts else ''
+    sermon_title = title_case_filename_part(title_parts[1]) if len(title_parts) > 1 else ''
+    title = ' - '.join(part for part in [passage, sermon_title] if part)
+
+    return {
+        'album': 'Carrigaline Baptist Church',
+        'albumartist': 'Carrigaline Baptist Church',
+        'artist': '',
+        'title': title,
+        'date': year,
+    }
+
+
+def prompt_for_tag(filename, tag, current_value, suggestion):
+    default_value = current_value or suggestion
+    prompt_parts = [f"{filename} {tag}"]
+    if current_value:
+        prompt_parts.append(f"current='{current_value}'")
+    if suggestion and suggestion != current_value:
+        prompt_parts.append(f"suggested='{suggestion}'")
+    if default_value:
+        prompt_parts.append(f"[{default_value}]")
+    prompt = ' '.join(prompt_parts) + ': '
+    response = input(prompt).strip()
+    return response if response else default_value
+
+
+def correct_mp3_file(file_path):
+    try:
+        audio = EasyID3(file_path)
+    except ID3NoHeaderError:
+        audio = EasyID3()
+
+    suggestions = suggest_sermon_tags(file_path)
+    filename = Path(file_path).name
+    changed = False
+
+    print(f"\nCorrecting {filename}")
+    for tag in expected_tags:
+        current_value = audio[tag][0] if tag in audio and audio[tag] else ''
+        new_value = prompt_for_tag(filename, tag, current_value, suggestions.get(tag, ''))
+        if new_value and new_value != current_value:
+            audio[tag] = new_value
+            changed = True
+
+    if changed:
+        audio.save(file_path)
+        print(f"Saved changes to {filename}")
+    else:
+        print(f"No changes made to {filename}")
+
+
+def correct_mp3_files(folder_path):
+    for filename in os.listdir(folder_path):
+        if filename.endswith('.mp3'):
+            correct_mp3_file(os.path.join(folder_path, filename))
 
 
 def check_mp3_files_have_tags(folder_path, summary):
@@ -104,19 +182,25 @@ def export_sermon_tags_to_csv(folder_path):
         print(f'Exported {total_files} to {file_name}')
 
 
-if __name__ == '__main__':
+def main():
     parser = argparse.ArgumentParser(description='Check MP3 files for expected ID3 tags.')
     parser.add_argument('folder_path', metavar='FOLDER_PATH', type=str, nargs='?',
                         default='.', help='path to the folder (default: current folder)')
     parser.add_argument('-s', '--summary', help='include a summary',
                         action='store_true')
-    parser.add_argument('-c', '--correct', help='(future) automatically correct missing tags where possible',
+    parser.add_argument('-c', '--correct', help='prompt to correct tags using filename suggestions',
                         action='store_true')
     parser.add_argument('-x', '--export', help='Export csv summary',
                         action='store_true')
     args = parser.parse_args()
 
-    if args.export:
+    if args.correct:
+        correct_mp3_files(args.folder_path)
+    elif args.export:
         export_sermon_tags_to_csv(args.folder_path)
     else:
         check_mp3_files_have_tags(args.folder_path, args.summary)
+
+
+if __name__ == '__main__':
+    main()
