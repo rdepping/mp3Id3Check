@@ -12,6 +12,10 @@ clean: ## Delete dependencies and other files
 install: ## Install all dependencies for local development
 	@uv sync --locked --all-groups
 
+.PHONY: run
+run: ## Run the MP3 ID3 tag checker
+	@uv run mp3-id3-check
+
 define update_python_deps
 	@ echo Updating $(1)
 	@ cd $(1) &&\

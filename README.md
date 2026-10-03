@@ -4,13 +4,13 @@ check mp3 files for a set of expected id3 tags
 Install dependencies
 `uv sync` or `uv add mutagen`
 
-Edit `mp3_id3_check.py` to update for the list of expected tags, export headers to csv etc.
+Edit `src/mp3_id3_check/cli.py` to update the expected tags or CSV export headers.
 
 Help
 
 ```commandline
 ❯ uv run mp3-id3-check --help
-usage: mp3_id3_check.py [-h] [-s] [-c] [-x] [FOLDER_PATH]
+usage: mp3-id3-check [-h] [-s] [-c] [-x] [FOLDER_PATH]
 
 Check MP3 files for expected ID3 tags.
 
@@ -20,7 +20,7 @@ positional arguments:
 options:
   -h, --help     show this help message and exit
   -s, --summary  include a summary
-  -c, --correct  automatically correct missing tags where possible
+  -c, --correct  prompt to correct tags using filename suggestions
   -x, --export   Export csv summary
 ```
 
