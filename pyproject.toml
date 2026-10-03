@@ -9,6 +9,14 @@ dependencies = [
     "mutagen>=1.46.0",
 ]
 
+[tool.uv]
+system-certs = true
+
+[[tool.uv.index]]
+name = "cloudsmith"
+url = "https://dl.cloudsmith.io/basic/secure-apps/app-repo/python/simple/"
+default = true
+
 [project.scripts]
 mp3-id3-check = "mp3_id3_check:main"
 
