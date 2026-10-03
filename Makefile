@@ -16,6 +16,12 @@ install: ## Install all dependencies for local development
 run: ## Run the MP3 ID3 tag checker
 	@uv run mp3-id3-check
 
+.PHONY: publish
+publish: ## Build and publish the current version to Cloudsmith
+	@rm -rf dist
+	@uv build
+	@uv publish --index cloudsmith
+
 define update_python_deps
 	@ echo Updating $(1)
 	@ cd $(1) &&\

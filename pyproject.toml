@@ -1,6 +1,6 @@
 [project]
 name = "mp3-id3-check"
-version = "0.1.0"
+version = "0.1.1"
 description = "check mp3 files for a set of expected id3 tags"
 authors = [{ name = "Ralph Depping", email = "github@depping.me" }]
 readme = "README.md"
@@ -15,6 +15,7 @@ system-certs = true
 [[tool.uv.index]]
 name = "cloudsmith"
 url = "https://dl.cloudsmith.io/basic/secure-apps/app-repo/python/simple/"
+publish-url = "https://python.cloudsmith.io/secure-apps/app-repo/"
 default = true
 
 [project.scripts]

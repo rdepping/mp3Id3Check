@@ -8,7 +8,7 @@ resolution-markers = [
 
 [[package]]
 name = "mp3-id3-check"
-version = "0.1.0"
+version = "0.1.1"
 source = { editable = "." }
 dependencies = [
     { name = "mutagen", version = "1.47.0", source = { registry = "https://dl.cloudsmith.io/basic/secure-apps/app-repo/python/simple/" }, marker = "python_full_version < '3.10'" },

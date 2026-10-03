@@ -1,12 +1,59 @@
 # mp3Id3Check
 check mp3 files for a set of expected id3 tags
 
-Install dependencies
-`uv sync` or `uv add mutagen`
+## Use
+
+### Run from a checkout
+
+This is the simplest option, as the tool is currently only published and available from a private repo
+
+```commandline
+git clone https://github.com/rdepping/mp3Id3Check.git
+cd mp3Id3Check
+make install
+make run
+# Or provide an MP3 folder:
+uv run mp3-id3-check /path/to/mp3s
+```
 
 Edit `src/mp3_id3_check/cli.py` to update the expected tags or CSV export headers.
 
-Help
+### Install as a dependency
+
+All options need Cloudsmith credentials with repository-read access:
+
+```commandline
+export UV_INDEX_CLOUDSMITH_USERNAME="YOUR_CLOUDSMITH_USERNAME"
+export UV_INDEX_CLOUDSMITH_PASSWORD="YOUR_CLOUDSMITH_API_KEY"
+```
+
+Add Cloudsmith as the default index in the consuming project's `pyproject.toml`:
+
+```toml
+[[tool.uv.index]]
+name = "cloudsmith"
+url = "https://dl.cloudsmith.io/basic/secure-apps/app-repo/python/simple/"
+default = true
+```
+
+Then install and run the application from that project:
+
+```commandline
+uv add mp3-id3-check
+uv run mp3-id3-check /path/to/mp3s
+```
+
+### Install as a local tool
+
+```commandline
+uv tool install \
+  --system-certs \
+  --default-index cloudsmith=https://dl.cloudsmith.io/basic/secure-apps/app-repo/python/simple/ \
+  mp3-id3-check
+mp3-id3-check /path/to/mp3s
+```
+
+## Help
 
 ```commandline
 ❯ uv run mp3-id3-check --help
